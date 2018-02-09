@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<title>贺卡制作</title>
+<script src="https://cdn.bootcss.com/jquery/2.1.1-rc1/jquery.min.js"></script>
+<link href="Public/css/custom.css" rel="stylesheet">
+</head>
+<body>
+	<div class="deng1">
+
+	</div>
+	<div class="deng2">
+
+	</div>
+	<div class="deng3">
+
+	</div>
+	<div class="text">
+		<input name="" class="text_Area1" placeholder="输入本人姓名"><!--第一个值-->
+		<textarea name="" class="text_Area2"  maxlength="18" >2018新年快乐，阖家欢乐！</textarea><!--第二个值-->
+		<input name="" class="text_Area3" placeholder="输入对方姓名"><!--第二个值-->
+		<button id="startBtn" type="button" name="button">开始制作贺卡</button>
+	</div>
+
+
+<img id="starImg" src="Public/images/sImg11.png" data-value="1" ><!--图片原图-->
+
+<img id="lod" src="Public/images/lod.gif" ><!--loding-->
+
+<canvas id="main"></canvas><!--canvas区域-->
+<img id="endImg" width="500" style="display:none;">
+<div style="width:350;"><!--将canvas转成图片存入img标签，用于保存图片--></div>
+
+	<div class="tip" style="display: none">长按图片分享</div>
+</body>
+
+
+
+<script>
+var getPixelRatio = function(context) {
+	var backingStore = context.backingStorePixelRatio ||
+		context.webkitBackingStorePixelRatio ||
+		context.mozBackingStorePixelRatio ||
+		context.msBackingStorePixelRatio ||
+		context.oBackingStorePixelRatio ||
+		context.backingStorePixelRatio || 1;
+
+	return (window.devicePixelRatio || 1) / backingStore;
+};
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, 500, 750);
+var ratio = getPixelRatio(ctx);
+var iw= 500;//*ratio;
+var ih = 750;//*ratio;
+
+var iw_t= 250*ratio;
+var ih_t = 550*ratio;
+
+//按钮点击事件
+$('#startBtn').on('click',function(){
+	$('.text').hide();
+	$('.deng1').hide();
+	$('.deng2').hide();
+	$('.deng3').hide();
+	$('.ren').hide();
+	$('.bottom').hide();
+	$('#lod').show(100,function(){
+		$('#endImg').show();
+		resizeCanvas();
+		hechen();
+		$("#main").hide();
+		$('#lod').hide();
+		$('.tip').show();
+});
+
+
+});
+
+function hechen(){
+	console.log(ratio);
+	console.log(iw);
+	console.log(ih);
+
+	ctx.drawImage(document.querySelector('img'), 0, 0);
+	//ctx.drawImage(document.querySelector('img'), 0, 0, iw, ih);
+
+
+			// mainCtx.drawImage(starImg,0,0,iwidth-250,iheight-200);//二次绘图覆盖到底图可以用二维码
+			ctx.font = "24px Microsoft Yahei";//设置文字大小字体
+			ctx.fillStyle = "#b43928";//设置文字颜色
+			//开始绘制文字，可绘制多个
+			//mainCtx.fillText(文字值,坐标x,坐标y);
+
+
+
+			var input_1 =  $(".text_Area1").val();
+			var input_3 =  $(".text_Area3").val();
+			if(input_1 == ""){
+				ctx.fillText(('百年英才敬上'),500*0.58,750*0.87);
+			}else{
+				ctx.fillText(($('.text_Area1').val() + '敬上'),500*0.58,750*0.87);
+			}
+			if(input_3 == ""){
+				ctx.fillText(('祝您：'),500*0.45,750*0.74);
+			}else{
+				ctx.fillText(('祝'+$('.text_Area3').val()+"："),500*0.45,750*0.74);
+			}
+
+
+ctx.fillStyle="#b43928";
+ctx.lineWidth=1;
+var str = $('.text_Area2').val();
+var lineWidth = 0;
+var canvasWidth = 190;//计算canvas的宽度
+var initHeight=15;//绘制字体距离canvas顶部初始的高度
+var lastSubStrIndex= 0; //每次开始截取的字符串的索引
+
+for(let i=0;i<str.length;i++){
+    lineWidth+=ctx.measureText(str[i]).width;
+    if(lineWidth>canvasWidth){
+        ctx.fillText(str.substring(lastSubStrIndex,i),iw*0.45,ih*0.79);//绘制截取部分
+        initHeight+=20;//20为字体的高度
+        lineWidth=0;
+        lastSubStrIndex=i;
+    }
+    if(i==str.length-1){//绘制剩余部分
+        ctx.fillText(str.substring(lastSubStrIndex,i+1),iw*0.45,ih*0.83);
+    }
+}
+	//将图片存入img标签
+			saveImageInfo();
+
+}
+//获取canvas
+
+//定义canvas属性
+function resizeCanvas() {
+
+     $('#main').attr("width", iw);
+     $('#main').attr("height", ih);
+		var vm = $('#main').attr("width");
+		console.log(vm);
+		var vh = $('#main').attr("height");
+};
+//将canvas绘出的图转成图片存入img
+function saveImageInfo ()   {
+     var mycanvas = document.getElementById("main");
+     var image = mycanvas.toDataURL("image/png");
+     $('#endImg').attr('src',image);
+
+}
+</script>
+</html>
